@@ -12,6 +12,6 @@ typedef struct DHT11Struct
 }DHT11Struct;
 
 void DHT_Init(DHT11Struct *dht11);
-esp_err_t DHTRead(DHT11Struct *dht11);
+void DHT_Read(DHT11Struct *dht11);
 
 #endif
