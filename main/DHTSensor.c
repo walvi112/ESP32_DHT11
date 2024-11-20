@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include "rom/ets_sys.h"
 #include "esp_log.h"
+#include "freertos/FreeRTOS.h"
 #include "DHTSensor.h"
 
 #define CHECK_TIMEOUT(x)  if(!x) return false;
 
 extern const char *TAG;
+static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 
 static bool waitState(DHT11Struct *dht11, uint8_t state, uint32_t delayUs)
 {
@@ -14,6 +16,7 @@ static bool waitState(DHT11Struct *dht11, uint8_t state, uint32_t delayUs)
     {
         if (count >= delayUs)
         {
+            taskEXIT_CRITICAL(&mux);
             ESP_LOGE(TAG, "Read DHT11 timeout");
             return false;
         }
@@ -38,6 +41,7 @@ bool DHT_Read(DHT11Struct *dht11)
     uint8_t data[5] = {0};
     gpio_set_direction(dht11->gpio_pin, GPIO_MODE_OUTPUT_OD);
     gpio_set_level(dht11->gpio_pin, 0);
+    taskENTER_CRITICAL(&mux);
     ets_delay_us(19000);
     gpio_set_direction(dht11->gpio_pin, GPIO_MODE_INPUT);
     CHECK_TIMEOUT(waitState(dht11, 0, 40));
@@ -60,10 +64,12 @@ bool DHT_Read(DHT11Struct *dht11)
     {
         dht11->humidity = data[0] + data[1]/10;
         dht11->temperature = data[2] + data[3]/10;
+        taskEXIT_CRITICAL(&mux);
         return true;
     }
     else 
     {
+        taskEXIT_CRITICAL(&mux);
         ESP_LOGE(TAG, "Checksum DHT11 error");
         return false;
     }
