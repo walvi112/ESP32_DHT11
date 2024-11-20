@@ -1,7 +1,6 @@
 #ifndef DHT_SENSOR
 #define DHT_SENSOR
 #include "driver/gpio.h"
-#include "esp_err.h"
 
 typedef struct DHT11Struct
 {
@@ -12,6 +11,6 @@ typedef struct DHT11Struct
 }DHT11Struct;
 
 void DHT_Init(DHT11Struct *dht11);
-void DHT_Read(DHT11Struct *dht11);
+bool DHT_Read(DHT11Struct *dht11);
 
 #endif

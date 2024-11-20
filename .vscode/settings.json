@@ -13,5 +13,14 @@
     "idf.port": "/dev/ttyUSB0",
     "idf.pythonBinPath": "/home/vinhdq/.espressif/python_env/idf5.3_py3.8_env/bin/python",
     "idf.toolsPath": "/home/vinhdq/.espressif",
-    "idf.flashType": "UART"
+    "idf.flashType": "UART",
+    "files.associations": {
+        "random": "c",
+        "*.tcc": "cpp",
+        "format": "cpp",
+        "bitset": "c",
+        "algorithm": "c",
+        "gpio.h": "c",
+        "stdio.h": "c"
+    }
 }
